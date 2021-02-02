@@ -4,9 +4,9 @@
 
 - add transitions and animations for error messages
 
-- optional review
+- like and review system
 
-- book categories
+- user profile sidebar
 
 ## Project setup
 
