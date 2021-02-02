@@ -1,0 +1,129 @@
+/* custom font */
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;800;900&display=swap");
+
+/* variables */
+:root {
+  box-sizing: border-box;
+  --primary: #4f515a;
+  --secondary: #ebebeb;
+  --warning: #da0f41;
+  --bg-color: #fafafa;
+  font-size: 16px;
+}
+
+/* base styles  */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  font-family: "Nunito", sans-serif;
+  color: var(--primary);
+}
+
+body {
+  background: var(--bg-color);
+}
+a {
+  text-decoration: none;
+}
+
+/* listing tags, categories */
+.pill {
+  display: inline-block;
+  padding: 5px;
+  color: rgb(92, 91, 91);
+  text-decoration: none;
+  border-radius: 10px;
+  border: 1px solid var(--secondary);
+  margin: 5px 5px;
+  cursor: pointer;
+}
+
+.pill:hover {
+  background-color: #3498db;
+  border: 1px solid #3498db;
+  color: #fff;
+}
+
+.pill.active {
+  background-color: #3498db;
+  border: 1px solid #3498db;
+  color: #fff;
+}
+
+/* buttons */
+button,
+.btn {
+  background: var(--secondary);
+  border-radius: 8px;
+  border: 0;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-block;
+}
+button:hover,
+.btn:hover {
+  background: var(--primary);
+  color: white;
+}
+button:disabled {
+  opacity: 0.5;
+  color: var(--primary);
+  background: var(--secondary);
+  cursor: not-allowed;
+}
+
+/* forms */
+form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 1px 2px 3px rgba(50, 50, 50, 0.05);
+  border: 1px solid var(--secondary);
+  background: white;
+}
+input,
+textarea {
+  border: 0;
+  border-bottom: 1px solid var(--secondary);
+  padding: 10px;
+  outline: none;
+  resize: none;
+  display: block;
+  width: 100%;
+  margin: 20px auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+form button,
+form .btn {
+  display: block;
+  margin: 20px auto;
+  margin-bottom: 0;
+}
+
+form label {
+  font-size: 0.9rem;
+  display: block;
+  margin-top: 30px;
+}
+
+button .btn {
+  cursor: pointer;
+}
+
+/* error text */
+.error {
+  color: var(--warning);
+  font-size: 0.8rem;
+  margin: 16px 0;
+}
+
+*:focus {
+  outline: none;
+}
