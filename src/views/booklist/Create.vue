@@ -47,8 +47,8 @@ import { timestamp } from "@/firebase/config";
 import useCollection from "@/composables/useCollection";
 import { useRouter } from "vue-router";
 import useStorage from "@/composables/useStorage";
-import getUser from "@/composables/getUser";
-import grow from "@/composables/textAreaGrow";
+import getUser from "@/composables/auth/getUser";
+import grow from "@/composables/misc/textAreaGrow";
 import TagsInput from "@/components/Lists/TagsInput.vue";
 
 export default {
@@ -91,7 +91,7 @@ export default {
       tags.value = allTags;
     };
     // for uploading title and description
-    const { errorAddDoc, addDoc } = useCollection("booklists");
+    const { error: errorAddDoc, addDoc } = useCollection("booklists");
     // for uploading image
     const {
       error: errorUploadImage,
@@ -119,6 +119,7 @@ export default {
         userName: user.value.displayName,
         books: [],
         tags: tags.value,
+        upvotes: 0,
         createdAt: timestamp(),
       };
       if (file.value) {

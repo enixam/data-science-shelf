@@ -48,7 +48,7 @@ const routes = [
     beforeEnter: requireAuth
   },
   {
-    path: "/lists/:id",
+    path: "/lists/:lid",
     name: "listDetails",
     component: ListDetails,
     props: true

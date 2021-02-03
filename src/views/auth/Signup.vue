@@ -15,7 +15,7 @@
 
 <script>
 import { ref } from "vue";
-import useSignup from "@/composables/useSignup";
+import useSignup from "@/composables/auth/useSignup";
 import { useRouter } from "vue-router";
 
 export default {

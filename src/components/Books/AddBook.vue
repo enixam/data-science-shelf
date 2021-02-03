@@ -21,7 +21,7 @@
 
 <script>
 import { ref } from "vue";
-import grow from "@/composables/textAreaGrow";
+import grow from "@/composables/misc/textAreaGrow";
 import useDocument from "@/composables/useDocument";
 
 export default {

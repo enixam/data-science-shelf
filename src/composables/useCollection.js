@@ -3,11 +3,11 @@ import { db } from '@/firebase/config'
 
 const useCollection = (collection) => {
     const isPending = ref(false)
-    const errorAddDoc = ref(null)
+    const error = ref(null)
 
     // add a new document
     const addDoc = async (doc) => {
-        errorAddDoc.value = null
+        error.value = null
         isPending.value = true
         try {
             const res = await db.collection(collection).add(doc)
@@ -16,11 +16,11 @@ const useCollection = (collection) => {
         }
         catch (err) {
             isPending.value = false
-            errorAddDoc.value = err.message
+            error.value = err.message
         }
     }
 
-    return { errorAddDoc, addDoc, isPending }
+    return { error, addDoc, isPending }
 
 }
 

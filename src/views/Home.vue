@@ -56,8 +56,8 @@
 import SingleList from "@/components/Lists/SingleList.vue";
 import getCollection from "@/composables/getCollection";
 import TwoColumn from "@/components/Layout/TwoColumn.vue";
-import count from "@/composables/count";
-import useHandleSelect from "@/composables/useHandleSelect";
+import count from "@/composables/misc/count";
+import useHandleSelect from "@/composables/misc/useHandleSelect";
 import { ref, computed } from "vue";
 
 export default {

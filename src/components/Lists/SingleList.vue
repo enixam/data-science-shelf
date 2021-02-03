@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="{ name: 'listDetails', params: { id: singleList.id } }">
+  <router-link :to="{ name: 'listDetails', params: { lid: singleList.id } }">
     <base-card>
       <div class="thumbnail">
         <img :src="singleList.coverUrl" alt="" />

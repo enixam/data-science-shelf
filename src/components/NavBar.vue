@@ -9,6 +9,7 @@
       </h1>
       <div class="links">
         <div v-if="user">
+          <span class="greeting">Hello, {{ user.displayName }}</span>
           <router-link
             :to="{ name: 'userLists', params: { uid: user.uid } }"
             class="btn"
@@ -39,8 +40,8 @@
 
 <script>
 import { useRouter } from "vue-router";
-import useLogout from "@/composables/useLogout";
-import getUser from "@/composables/getUser";
+import useLogout from "@/composables/auth/useLogout";
+import getUser from "@/composables/auth/getUser";
 
 export default {
   setup() {
