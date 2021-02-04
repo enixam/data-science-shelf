@@ -8,9 +8,7 @@
 
 - user profile sidebar: net ninja vuetify course
 
-- public and private lists; edit booklists
-
-- allow user to get into other user's route by the listDetails route
+- public and private lists?
 
 ## Project setup
 
