@@ -58,7 +58,8 @@ const routes = [
     path: "/edit/list/:lid",
     name: "listEdit",
     component: ListEdit,
-    props: true
+    props: true,
+    beforeEnter: requireAuth
   }
 ]
 
