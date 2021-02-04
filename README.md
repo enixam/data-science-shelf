@@ -2,11 +2,9 @@
 
 **TODO**
 
-- add transitions and animations for error messages
-
 - like and review system
 
-- user profile sidebar: net ninja vuetify course
+- add user navigation drawer (when vuetify 3 is released)
 
 - public and private lists?
 
