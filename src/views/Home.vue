@@ -100,14 +100,22 @@ export default {
         selectedCategories.value.includes("all") ||
         !selectedCategories.value.length
       ) {
-        return selectedTags.value.some((t) => list.tags.includes(t));
+        if (selectedTags.value.includes("all")) {
+          return true;
+        } else {
+          return selectedTags.value.some((t) => list.tags.includes(t));
+        }
       } else if (
         selectedTags.value.includes("all") ||
         !selectedTags.value.length
       ) {
-        return selectedCategories.value.some((c) =>
-          list.categories.includes(c)
-        );
+        if (selectedCategories.value.includes("all")) {
+          return true;
+        } else {
+          return selectedCategories.value.some((c) =>
+            list.categories.includes(c)
+          );
+        }
       } else {
         return (
           selectedTags.value.some((t) => list.tags.includes(t)) ||
