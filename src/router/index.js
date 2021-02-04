@@ -4,6 +4,7 @@ import Login from "../views/auth/Login.vue"
 import Signup from "../views/auth/Signup.vue"
 import Create from "../views/booklist/Create.vue"
 import ListDetails from "../views/booklist/ListDetails.vue"
+import ListEdit from "../views/booklist/ListEdit.vue"
 import UserLists from "../views/booklist/UserLists.vue"
 
 // route guard
@@ -51,6 +52,12 @@ const routes = [
     path: "/lists/:lid",
     name: "listDetails",
     component: ListDetails,
+    props: true
+  },
+  {
+    path: "/edit/list/:lid",
+    name: "listEdit",
+    component: ListEdit,
     props: true
   }
 ]

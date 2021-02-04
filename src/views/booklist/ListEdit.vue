@@ -1,9 +1,10 @@
 <template>
   <form @submit.prevent="handleSubmit">
-    <h2>Create new book list</h2>
-    <label for="">List title</label>
+    <the-dot v-if="isLoadPending">restoring list data </the-dot>
+    <div class="error">{{ errorLoad }}</div>
+    <label for="">Title</label>
     <input type="text" required v-model="title" />
-    <label>Pick categories for the list</label>
+    <label>Categories</label>
     <div class="categories">
       <span
         v-for="category in categories"
@@ -13,19 +14,31 @@
         >{{ category }}</span
       >
     </div>
-    <label for="">(Optional) A short description of your list</label>
+    <label>Description</label>
     <textarea v-model="description" @input="grow"></textarea>
-    <tags-input @tagEntered="updateTags">
-      <template #inputPrompt>(Optional) Press enter to add tags</template>
-      <template #errorMessage>Tag already exists</template>
-    </tags-input>
-    <label
-      >(Optional) Upload book list cover image, supports jpg, png and svg</label
-    >
+    <!-- tags -->
+    <label for="">Tags</label>
+    <div class="book-tags">
+      <input type="text" v-model="tag" @keydown.enter.prevent="addTag" />
+      <div class="tags">
+        <div
+          v-for="t in selectedTags"
+          :key="t"
+          class="enteredTag"
+          v-if="selectedTags.length"
+        >
+          <span class="tag">#{{ t }}</span>
+          <span class="material-icons" @click="removeTag(t)">
+            clear
+          </span>
+        </div>
+      </div>
+    </div>
+    <label>Cover Image</label>
     <input type="file" @change="handleFile" accept=".jpg, jpeg, .png, .svg" />
 
     <div class="buttons">
-      <button v-if="!isPending">Add new list</button>
+      <button v-if="!isPending">Save</button>
       <div v-else>
         <the-dot>Saving </the-dot>
       </div>
@@ -34,7 +47,7 @@
       <div v-if="errorUploadImage">
         Failed to upload the image
       </div>
-      <div v-if="errorAddDoc">
+      <div v-if="errorUpdateDoc">
         Failed to submit the new list
       </div>
     </div>
@@ -42,45 +55,84 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { timestamp } from "@/firebase/config";
-import useCollection from "@/composables/useCollection";
+import useDocument from "@/composables/useDocument";
 import { useRouter } from "vue-router";
 import useStorage from "@/composables/useStorage";
 import getUser from "@/composables/auth/getUser";
 import grow from "@/composables/misc/textAreaGrow";
 import TagsInput from "@/components/Lists/TagsInput.vue";
+import { getDocuments } from "@/composables/getDocuments";
 import useCategoryFilter from "@/composables/misc/useCategoryFilter";
 import categories from "@/composables/data/categories";
 
 export default {
+  props: ["lid"],
   components: {
     "tags-input": TagsInput,
   },
-  setup() {
+  setup(props) {
+    const { error: errorLoad, documents: list } = getDocuments(
+      "booklists",
+      props.lid
+    );
+    const isLoadPending = computed(() => {
+      if (list.value) return false;
+      else return true;
+    });
     const title = ref("");
     const description = ref("");
-    const file = ref(null);
-    const isPending = ref(false);
-    // add or remove categories
     const { selectedCategories, handleCategory } = useCategoryFilter();
+    const file = ref(null);
+
+    // tags
+    const tag = ref(null);
     const selectedTags = ref([]);
+    const errorAddTag = ref(false);
+    const addTag = () => {
+      errorAddTag.value = false;
+      if (!selectedTags.value.includes(tag.value)) {
+        tag.value = tag.value.replace(/\s/g, ""); // remove all whitespace
+        selectedTags.value.push(tag.value);
+      } else {
+        errorAddTag.value = true;
+      }
+      tag.value = "";
+    };
+
+    const removeTag = (t) => {
+      selectedTags.value = selectedTags.value.filter((tag) => {
+        return tag !== t;
+      });
+    };
+
+    // when the list is fuly loaded, fill the blanks with previous values
+    watch(list, () => {
+      title.value = list.value.title;
+      description.value = list.value.description;
+      selectedCategories.value = list.value.categories;
+      selectedTags.value = list.value.tags;
+    });
+
     const router = useRouter();
     const user = getUser();
+    const isPending = ref(false);
 
-    // for updating existing tags
-    const updateTags = (tags) => {
-      selectedTags.value = tags;
-    };
-    // for uploading title and description
-    const { error: errorAddDoc, addDoc } = useCollection("booklists");
-    // for uploading image
+    // updating functions
+    const { error: errorUpdateDoc, updateDoc } = useDocument(
+      "booklists",
+      props.lid
+    );
+
+    // image uploading functions
     const {
       error: errorUploadImage,
       filePath,
       url,
       uploadImage,
     } = useStorage();
+
     const handleFile = (e) => {
       const selected = e.target.files[0];
       if (selected) {
@@ -88,21 +140,17 @@ export default {
         file.value = selected;
       } else file.value = null;
     };
-    // for uploading the new book list object
+
+    // uploading new list object
     const handleSubmit = async () => {
       isPending.value = true;
-      errorAddDoc.value = null;
+      errorUpdateDoc.value = null;
       errorUploadImage.value = null;
       const newList = {
         title: title.value,
         categories: selectedCategories.value,
         description: description.value,
-        userId: user.value.uid,
-        userName: user.value.displayName,
-        books: [],
         tags: selectedTags.value,
-        upvotes: 0,
-        createdAt: timestamp(),
         lastUpdatedAt: timestamp(),
       };
       if (file.value) {
@@ -110,36 +158,37 @@ export default {
         await uploadImage(file.value);
         newList.coverUrl = url.value;
         newList.filePath = filePath.value;
-      } else {
-        // if user does not upload a cover, use the default image
-        newList.coverUrl =
-          "https://firebasestorage.googleapis.com/v0/b/dsbook-list.appspot.com/o/covers%2Fdefault.jpg?alt=media&token=63f7b267-b152-4cab-bcf6-e4f277304924";
-        newList.filePath = null;
       }
       if (!errorUploadImage.value) {
-        const res = await addDoc(newList);
+        // firebase update does not return anything
+        await updateDoc(newList);
         isPending.value = false;
-        if (!errorAddDoc.value) {
-          router.push({ name: "listDetails", params: { lid: res.id } });
+        if (!errorUpdateDoc.value) {
+          router.push({ name: "listDetails", params: { lid: list.value.id } });
         } else {
-          console.log(errorAddDoc.value);
+          console.log(errorUpdateDoc.value);
         }
       } else {
         console.log(errorUploadImage.value);
       }
     };
     return {
+      isLoadPending,
+      errorLoad,
       title,
+      description,
       selectedCategories,
+      selectedTags,
       categories,
       handleCategory,
-      description,
-      updateTags,
+      addTag,
+      removeTag,
+      tag,
       handleSubmit,
       handleFile,
       handleCategory,
       errorUploadImage,
-      errorAddDoc,
+      errorUpdateDoc,
       isPending,
       grow,
     };
@@ -180,5 +229,29 @@ button {
 
 .categories .pill {
   font-size: 0.8px;
+}
+
+.book-tags {
+  margin-bottom: 10px;
+}
+
+.enteredTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  margin: 10px 10px 0 0;
+  color: #444;
+  background: #ddd;
+  padding: 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.material-icons {
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 5px;
+  color: #444;
 }
 </style>

@@ -9,7 +9,7 @@
       <label for="">Review *</label>
       <textarea v-model="review" @input="grow" required></textarea>
       <label>Link </label>
-      <input type="text" v-model="link" />
+      <input type="url" v-model="link" />
       <label>Author </label>
       <input type="text" v-model="author" />
       <div class="error" v-if="errorUpdateDoc">{{ errorUpdateDoc }}</div>
@@ -23,6 +23,7 @@
 import { ref } from "vue";
 import grow from "@/composables/misc/textAreaGrow";
 import useDocument from "@/composables/useDocument";
+import { timestamp } from "@/firebase/config";
 
 export default {
   props: ["list"],
@@ -52,7 +53,9 @@ export default {
       };
       await updateDoc({
         // current books plus the new book
+        // also updaet list update time
         books: [...props.list.books, newBook],
+        lastUpdatedAt: timestamp(),
       });
       if (!errorUpdateDoc.value) {
         title.value = "";
@@ -60,6 +63,7 @@ export default {
         link.value = "";
         author.value = "";
         showForm.value = false;
+        console.log("finished uploading the new book!");
       }
     };
 

@@ -2,7 +2,7 @@
   <div class="home">
     <two-column>
       <template #sidebar>
-        <div class="category-filter">
+        <div class="category-filter" v-if="selectedCategories">
           <h3>Category</h3>
           <span
             v-for="(count, category) in categories"
@@ -19,7 +19,7 @@
             {{ category }} {{ count }}
           </span>
         </div>
-        <div class="tag-filter">
+        <div class="tag-filter" v-if="selectedTags">
           <h3>Tag</h3>
           <span
             v-for="(count, tag) in tags"
@@ -35,6 +35,9 @@
           >
             {{ tag }} {{ count }}
           </span>
+        </div>
+        <div class="search">
+          <search-bar @search="search"></search-bar>
         </div>
       </template>
       <template #main>
@@ -57,27 +60,63 @@ import SingleList from "@/components/Lists/SingleList.vue";
 import getCollection from "@/composables/getCollection";
 import TwoColumn from "@/components/Layout/TwoColumn.vue";
 import count from "@/composables/misc/count";
-import useHandleSelect from "@/composables/misc/useHandleSelect";
-import { ref, computed } from "vue";
+import useCategoryFilter from "@/composables/misc/useCategoryFilter";
+import useTagFilter from "@/composables/misc/useTagFilter";
+import Search from "@/components/Search.vue";
+import { ref, computed, watch } from "vue";
 
 export default {
   components: {
     "single-list": SingleList,
     "two-column": TwoColumn,
+    "search-bar": Search,
   },
   setup() {
     const { error, documents: bookLists } = getCollection("booklists");
-    const {
-      selected: selectedCategories,
-      handleSelect: handleCategory,
-    } = useHandleSelect();
-    // tag cloud
-    const {
-      selected: selectedTags,
-      handleSelect: handleTag,
-    } = useHandleSelect();
-    // category cloud
+    const { selectedCategories, handleCategory } = useCategoryFilter();
+    const { selectedTags, handleTag } = useTagFilter();
+    // search
+    let keywords = ref("");
+    const search = (kw) => {
+      if (kw !== "") {
+        keywords.value = kw.split(" ");
+      } else {
+        keywords.value = kw;
+      }
+    };
 
+    const isSearched = (list) => {
+      return keywords.value.some((keyword) => {
+        return (
+          list.tags.includes(keyword) ||
+          list.categories.some((c) => c.includes(keyword)) ||
+          list.title.includes(keyword)
+        );
+      });
+    };
+
+    const isSelected = (list) => {
+      if (
+        selectedCategories.value.includes("all") ||
+        !selectedCategories.value.length
+      ) {
+        return selectedTags.value.some((t) => list.tags.includes(t));
+      } else if (
+        selectedTags.value.includes("all") ||
+        !selectedTags.value.length
+      ) {
+        return selectedCategories.value.some((c) =>
+          list.categories.includes(c)
+        );
+      } else {
+        return (
+          selectedTags.value.some((t) => list.tags.includes(t)) ||
+          selectedCategories.value.some((c) => list.categories.includes(c))
+        );
+      }
+    };
+
+    // tag cloud
     const tags = computed(() => {
       if (bookLists.value) {
         let tagCount = count(bookLists.value, "tags");
@@ -85,31 +124,47 @@ export default {
       }
     });
 
+    // category cloud
     const categories = computed(() => {
       if (bookLists.value) {
-        let categoryCount = count(bookLists.value, "category");
+        let categoryCount = count(bookLists.value, "categories");
         return categoryCount.value;
       }
     });
 
+    // show lists that meet the category, tag and search requirments
     const filteredLists = computed(() => {
-      if (bookLists.value) {
+      // no search term
+      if (bookLists.value && keywords.value === "") {
         if (
-          !selectedTags.value.length ||
-          !selectedCategories.value.length ||
-          selectedTags.value.includes("all") ||
-          selectedCategories.value.includes("all")
+          // return full data in either of the two condtions
+          // when page first loaded, or
+          // when both 'all' is clicked
+          (!selectedTags.value.length && !selectedCategories.value.length) ||
+          (selectedTags.value.includes("all") &&
+            selectedCategories.value.includes("all"))
         ) {
           return bookLists.value;
         } else {
+          // otherwise, filter lists based on selected tags and categories
           return bookLists.value.filter((list) => {
-            return (
-              selectedTags.value.some((tag) => list.tags.includes(tag)) ||
-              selectedCategories.value.some((category) =>
-                list.category.includes(category)
-              )
-            );
+            return isSelected(list);
           });
+        }
+        // with search term
+      } else if (bookLists.value) {
+        if (
+          (!selectedTags.value.length && !selectedCategories.value.length) ||
+          (selectedTags.value.includes("all") &&
+            selectedCategories.value.includes("all"))
+        ) {
+          return bookLists.value.filter((list) => {
+            return isSearched(list);
+          });
+        } else {
+          bookLists.value.filter(
+            (list) => isSelected(list) || isSearched(list)
+          );
         }
       }
     });
@@ -130,6 +185,7 @@ export default {
       selectedCategories,
       handleTag,
       handleCategory,
+      search,
     };
   },
 };

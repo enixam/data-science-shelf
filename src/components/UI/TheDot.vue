@@ -15,6 +15,7 @@
   height: 41.6px;
   padding: 10px;
   margin-bottom: 6px;
+  color: var(--blue);
 }
 #wave .dot {
   display: inline-block;
@@ -22,7 +23,7 @@
   height: 5px;
   border-radius: 50%;
   margin-right: 3px;
-  background: #303131;
+  background: var(--blue);
   animation: wave 1.3s linear infinite;
 }
 #wave .dot:nth-child(2) {

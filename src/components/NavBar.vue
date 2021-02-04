@@ -9,7 +9,7 @@
       </h1>
       <div class="links">
         <div v-if="user">
-          <span class="greeting">Hello, {{ user.displayName }}</span>
+          <span class="greeting">Hello, {{ name }}</span>
           <router-link
             :to="{ name: 'userLists', params: { uid: user.uid } }"
             class="btn"
@@ -42,12 +42,16 @@
 import { useRouter } from "vue-router";
 import useLogout from "@/composables/auth/useLogout";
 import getUser from "@/composables/auth/getUser";
+import { computed } from "vue";
 
 export default {
   setup() {
     const router = useRouter();
     const { error, logout, isPending } = useLogout();
     const user = getUser();
+    const name = computed(() => {
+      if (user.value) return user.value.displayName;
+    });
     const handleLogout = async () => {
       await logout();
       if (!error.value) {
@@ -58,7 +62,7 @@ export default {
     const confirmError = () => {
       error.value = null;
     };
-    return { error, handleLogout, confirmError, isPending, user };
+    return { error, handleLogout, confirmError, isPending, user, name };
   },
 };
 </script>

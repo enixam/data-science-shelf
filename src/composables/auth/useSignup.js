@@ -17,11 +17,11 @@ const signup = async (name, email, password) => {
             const newUser = {
                 userId: res.user.uid,
                 displayName: name,
-                upvotedOn: [],
+                upvotedOn: [], // list id
+                upvotes: 0, // upvotes received
                 photoURL: "https://picsum.photos/200",
                 numLists: 0,
                 numBooks: 0,
-                upvotes: 0
             }
             const { error: errorAddDoc, addDoc } = useCollection("users")
             await addDoc(newUser)

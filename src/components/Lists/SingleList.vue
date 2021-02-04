@@ -8,7 +8,9 @@
         <h3>{{ singleList.title }}</h3>
         <p>Created by {{ singleList.userName }}</p>
         <div class="category">
-          <p>{{ singleList.category[1] }}</p>
+          <p v-for="category in singleList.categories" :key="category">
+            {{ category }}
+          </p>
         </div>
       </div>
       <div class="book-number">

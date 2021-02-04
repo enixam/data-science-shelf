@@ -7,7 +7,12 @@
     <slot name="errorMessage"></slot>
   </div>
   <div class="tags">
-    <div v-for="t in tags" :key="t" class="enteredTag" v-if="tags.length">
+    <div
+      v-for="t in selectedTags"
+      :key="t"
+      class="enteredTag"
+      v-if="selectedTags.length"
+    >
       <span class="tag">#{{ t }}</span>
       <span class="material-icons" @click="removeTag(t)">
         clear
@@ -22,14 +27,14 @@ export default {
   emits: ["tagEntered"],
   setup(props, context) {
     const tag = ref("");
-    const tags = ref([]);
+    const selectedTags = ref([]);
     const errorAddTag = ref(false);
     const addTag = () => {
       errorAddTag.value = false;
-      if (!tags.value.includes(tag.value)) {
+      if (!selectedTags.value.includes(tag.value)) {
         tag.value = tag.value.replace(/\s/g, ""); // remove all whitespace
-        tags.value.push(tag.value);
-        context.emit("tagEntered", tags.value);
+        selectedTags.value.push(tag.value);
+        context.emit("tagEntered", selectedTags.value);
       } else {
         errorAddTag.value = true;
       }
@@ -37,12 +42,12 @@ export default {
     };
 
     const removeTag = (t) => {
-      tags.value = tags.value.filter((tag) => {
+      selectedTags.value = selectedTags.value.filter((tag) => {
         return tag !== t;
       });
     };
 
-    return { tag, tags, addTag, removeTag, errorAddTag };
+    return { tag, selectedTags, addTag, removeTag, errorAddTag };
   },
 };
 </script>

@@ -8,6 +8,7 @@
   --secondary: #ebebeb;
   --warning: #da0f41;
   --bg-color: #fafafa;
+  --blue: #3498db;
   font-size: 16px;
 }
 
@@ -42,14 +43,14 @@ a {
 }
 
 .pill:hover {
-  background-color: #3498db;
-  border: 1px solid #3498db;
+  background-color: var(--blue);
+  border: 1px solid var(--blue);
   color: #fff;
 }
 
 .pill.active {
-  background-color: #3498db;
-  border: 1px solid #3498db;
+  background-color: var(--blue);
+  border: 1px solid var(--blue);
   color: #fff;
 }
 
