@@ -72,6 +72,10 @@ export default {
   padding: 16px 10px;
   margin-bottom: 60px;
   background: white;
+  height: 70px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 nav {

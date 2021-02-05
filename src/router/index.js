@@ -49,7 +49,7 @@ const routes = [
     beforeEnter: requireAuth
   },
   {
-    path: "/lists/:lid",
+    path: "/list/:lid",
     name: "listDetails",
     component: ListDetails,
     props: true

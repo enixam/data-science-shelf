@@ -172,6 +172,8 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: sticky;
+  top: 130px;
 }
 
 .thumbnail {
