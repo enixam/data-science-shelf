@@ -20,8 +20,7 @@ const signup = async (name, email, password) => {
                 upvotedOn: [], // list id
                 upvotes: 0, // upvotes received
                 photoURL: "https://picsum.photos/200",
-                numLists: 0,
-                numBooks: 0,
+                filePath: null
             }
             const { error: errorAddDoc, addDoc } = useCollection("users")
             await addDoc(newUser)

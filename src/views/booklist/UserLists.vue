@@ -1,7 +1,7 @@
 <template>
   <two-column>
     <template #sidebar>
-      <user-profile :userId="uid"></user-profile>
+      <user-profile :userId="uid" :userLists="userLists"></user-profile>
     </template>
     <template #main>
       <the-dot v-if="isPending">Loading book lists </the-dot>

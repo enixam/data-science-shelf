@@ -34,7 +34,7 @@
       <div v-if="errorUploadImage">
         Failed to upload the image
       </div>
-      <div v-if="errorAddDoc">
+      <div v-if="errorAddList">
         Failed to submit the new list
       </div>
     </div>
@@ -45,6 +45,8 @@
 import { ref, computed } from "vue";
 import { timestamp } from "@/firebase/config";
 import useCollection from "@/composables/useCollection";
+import useDocument from "@/composables/useDocument";
+import { getDocuments } from "@/composables/getDocuments";
 import { useRouter } from "vue-router";
 import useStorage from "@/composables/useStorage";
 import getUser from "@/composables/auth/getUser";
@@ -72,8 +74,8 @@ export default {
     const updateTags = (tags) => {
       selectedTags.value = tags;
     };
-    // for uploading title and description
-    const { error: errorAddDoc, addDoc } = useCollection("booklists");
+    // uploading list
+    const { error: errorAddList, addDoc: addList } = useCollection("booklists");
     // for uploading image
     const {
       error: errorUploadImage,
@@ -91,7 +93,7 @@ export default {
     // for uploading the new book list object
     const handleSubmit = async () => {
       isPending.value = true;
-      errorAddDoc.value = null;
+      errorAddList.value = null;
       errorUploadImage.value = null;
       const newList = {
         title: title.value,
@@ -117,17 +119,15 @@ export default {
         newList.filePath = null;
       }
       if (!errorUploadImage.value) {
-        const res = await addDoc(newList);
-        isPending.value = false;
-        if (!errorAddDoc.value) {
+        const res = await addList(newList);
+        if (!errorAddList.value) {
           router.push({ name: "listDetails", params: { lid: res.id } });
-        } else {
-          console.log(errorAddDoc.value);
         }
       } else {
         console.log(errorUploadImage.value);
       }
     };
+
     return {
       title,
       selectedCategories,
@@ -139,7 +139,7 @@ export default {
       handleFile,
       handleCategory,
       errorUploadImage,
-      errorAddDoc,
+      errorAddList,
       isPending,
       grow,
     };

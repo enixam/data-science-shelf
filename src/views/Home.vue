@@ -100,7 +100,7 @@ export default {
         selectedCategories.value.includes("all") ||
         !selectedCategories.value.length
       ) {
-        if (selectedTags.value.includes("all")) {
+        if (selectedTags.value.includes("all") || !selectedTags.value.length) {
           return true;
         } else {
           return selectedTags.value.some((t) => list.tags.includes(t));
@@ -109,7 +109,10 @@ export default {
         selectedTags.value.includes("all") ||
         !selectedTags.value.length
       ) {
-        if (selectedCategories.value.includes("all")) {
+        if (
+          selectedCategories.value.includes("all") ||
+          !selectedCategories.value.length
+        ) {
           return true;
         } else {
           return selectedCategories.value.some((c) =>
@@ -142,6 +145,7 @@ export default {
 
     // show lists that meet the category, tag and search requirments
     const filteredLists = computed(() => {
+      console.log(selectedCategories.value, selectedTags.value);
       // no search term
       if (bookLists.value && keywords.value === "") {
         if (

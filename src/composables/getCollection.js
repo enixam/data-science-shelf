@@ -8,11 +8,10 @@ const getCollection = (collection, ...conditions) => {
 
     // register the firestore collection reference
     let collectionRefAll = db.collection(collection)
-
+    let collectionRef
     if (!conditions.length) {
-        var collectionRef = collectionRefAll
+        collectionRef = collectionRefAll
     } else {
-        var collectionRef;
         conditions.forEach(condition => {
             collectionRef = collectionRefAll.where(...condition)
         })

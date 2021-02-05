@@ -1,12 +1,12 @@
 import { db } from "@/firebase/config"
 import { ref } from "vue"
 
-const useDocument = (collection, id) => {
+const useDocument = (collection, id,) => {
     let error = ref(null)
     let isPending = ref(false)
+    let docRef;
 
-    let docRef = db.collection(collection).doc(id)
-
+    docRef = db.collection(collection).doc(id)
     const deleteDoc = async () => {
         error.value = null
         isPending.value = true
@@ -21,7 +21,6 @@ const useDocument = (collection, id) => {
         }
     }
 
-
     const updateDoc = async (updates) => {
         error.value = null
         isPending.value = true
@@ -34,6 +33,8 @@ const useDocument = (collection, id) => {
             error.value = err.message
         }
     }
+
+
 
     return { error, isPending, deleteDoc, updateDoc }
 }

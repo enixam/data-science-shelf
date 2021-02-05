@@ -34,8 +34,21 @@ const useStorage = () => {
         }
     }
 
+    const uploadAvatar = async (file) => {
+        error.value = null
+        filePath.value = `users/${user.value.uid}/${file.name}`
+        const storageRef = storage.ref(filePath.value)
+        try {
+            const res = await storageRef.put(file)
+            url.value = await res.ref.getDownloadURL()
+            return res
+        } catch (err) {
+            error.value = err.message
+        }
+    }
 
-    return { url, filePath, error, uploadImage, deleteImage }
+
+    return { url, filePath, error, uploadImage, deleteImage, uploadAvatar }
 
 }
 

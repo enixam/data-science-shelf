@@ -6,18 +6,20 @@
       </div>
       <div class="info">
         <h3>{{ singleList.title }}</h3>
-        <p>Created by {{ singleList.userName }}</p>
         <div class="category">
           <p v-for="category in singleList.categories" :key="category">
             {{ category }}
           </p>
+        </div>
+        <div class="creator">
+          <p>Created by {{ singleList.userName }}</p>
         </div>
       </div>
       <div class="book-number">
         <p>
           {{ singleList.books.length }}
 
-          {{ singleList.books.length ? "books" : "book" }}
+          {{ singleList.books.length <= 1 ? "book" : "books" }}
         </p>
       </div>
     </base-card>
@@ -47,8 +49,12 @@ export default {
 }
 
 .category {
-  font-size: 12px;
+  font-size: 0.8rem;
   font-style: italic;
+}
+
+.creator {
+  font-size: 0.7rem;
   margin-top: 20px;
 }
 

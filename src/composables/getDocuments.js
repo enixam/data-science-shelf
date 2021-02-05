@@ -5,11 +5,13 @@ import { db } from "@/firebase/config"
 const getDocuments = (collection, id, ...conditions) => {
     const documents = ref(null)
     const error = ref(null)
-
+    let documentRef;
+    let unsub;
     // get list details by list id
-    if (id) {
-        var documentRef = db.collection(collection).doc(id)
-        var unsub = documentRef.onSnapshot(doc => {
+    if (collection === "booklists" && id) {
+        documentRef = db.collection(collection).doc(id)
+        unsub = documentRef.onSnapshot(doc => {
+            // must wait for the server to create the timestamp & send it back
             if (doc.data() && doc.data().createdAt) {
                 documents.value = { ...doc.data(), id: doc.id }
                 console.log(documents.value)
@@ -22,24 +24,24 @@ const getDocuments = (collection, id, ...conditions) => {
             documents.value = null
             error.value = err.message
         })
+    }
 
-    } else {
+
+    else if (!id) {
         // get user profile by userId from the "users" collection
-        var documentRef = db.collection(collection)
+        documentRef = db.collection(collection)
         conditions.forEach(condition => {
             documentRef = documentRef.where(...condition)
         })
 
-        var unsub = documentRef.onSnapshot(snap => {
+        unsub = documentRef.onSnapshot(snap => {
             let results = []
             snap.docs.forEach(doc => {
-                // must wait for the server to create the timestamp & send it back
                 doc.data() && results.push({ ...doc.data(), id: doc.id })
             })
 
             if (results.length === 1) {
                 documents.value = results[0]
-                console.log(documents.value)
             } else {
                 documents.value = results
             }
@@ -68,11 +70,10 @@ const getUserDocuments = async (collection, uid) => {
             userDocuments.value.push({ ...doc.data() })
         })
     } catch (err) {
+        error.value = err.message
         console.log("cannot list all documents belong to this user.")
     }
-    return { userDocuments }
+    return { error, userDocuments }
 }
-
-
 
 export { getDocuments, getUserDocuments }
