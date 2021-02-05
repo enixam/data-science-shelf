@@ -16,10 +16,17 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 export default {
-  setup() {
+  emits: ["search"],
+  setup(props, context) {
     const keywords = ref("");
+    watch(keywords, () => {
+      if (keywords.value === "") {
+        console.log("search empty!");
+        context.emit("search", "");
+      }
+    });
     return { keywords };
   },
 };
@@ -32,11 +39,6 @@ export default {
   margin: 0;
   padding: 0;
 }
-
-.search {
-  margin-top: 30px;
-}
-
 .search,
 button,
 input {

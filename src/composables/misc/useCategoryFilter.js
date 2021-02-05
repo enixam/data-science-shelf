@@ -6,22 +6,22 @@ const handleCategory = (category) => {
         selectedCategories.value = selectedCategories.value.filter(
             c => c !== category
         );
-    } else if (category !== "all") {
+    } else if (category !== "ALL") {
         selectedCategories.value.push(category);
-        if (selectedCategories.value.includes("all")) {
+        if (selectedCategories.value.includes("ALL")) {
             selectedCategories.value = selectedCategories.value.filter(
-                c => c !== "all"
+                c => c !== "ALL"
             );
         }
     } else {
-        selectedCategories.value = ["all"];
+        selectedCategories.value = ["ALL"];
     }
     console.log("category: ", selectedCategories.value)
 }
 
 
 
-const useCategoryFilter = (type) => {
+const useCategoryFilter = () => {
     return { selectedCategories, handleCategory }
 }
 

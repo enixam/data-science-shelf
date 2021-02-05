@@ -9,17 +9,17 @@ const handleTag = (tag) => {
             t => t !== tag
         );
         // when user want to add an tag
-        // if it's "all", make all others unselectedTags
-        // if it is not "all", make sure "all" is not also present in the array
-    } else if (tag !== "all") {
+        // if it's "ALL", make ALL others unselectedTags
+        // if it is not "ALL", make sure "ALL" is not also present in the array
+    } else if (tag !== "ALL") {
         selectedTags.value.push(tag);
-        if (selectedTags.value.includes("all")) {
+        if (selectedTags.value.includes("ALL")) {
             selectedTags.value = selectedTags.value.filter(
-                t => t !== "all"
+                t => t !== "ALL"
             );
         }
     } else {
-        selectedTags.value = ["all"];
+        selectedTags.value = ["ALL"];
     }
     console.log("tag: ", selectedTags.value)
 }

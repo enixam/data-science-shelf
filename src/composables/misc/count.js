@@ -3,7 +3,7 @@ import { ref } from "vue"
 const count = (documents, entry) => {
     const items = ref([])
     const itemSet = new Set()
-    const itemCount = ref({ "all": "" })
+    const itemCount = ref({ "ALL": "" })
 
     // get unique values
     documents.forEach(doc => {

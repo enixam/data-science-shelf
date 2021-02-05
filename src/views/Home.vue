@@ -2,18 +2,20 @@
   <div class="home">
     <two-column>
       <template #sidebar>
+        <div class="search">
+          <search-bar @search="search"></search-bar>
+        </div>
         <div class="category-filter" v-if="selectedCategories">
           <h3>Category</h3>
           <span
             v-for="(count, category) in categories"
             :key="category"
             @click="handleCategory(category)"
-            :style="{ fontWeight: category === 'all' ? 'bold' : 'normal' }"
+            :style="{ fontWeight: category === 'ALL' ? 'bold' : 'normal' }"
             :class="[
               'category',
               'pill',
               { active: selectedCategories.includes(category) },
-              { active: category === 'all' && selectedCategories.length === 0 },
             ]"
           >
             {{ category }} {{ count }}
@@ -25,19 +27,11 @@
             v-for="(count, tag) in tags"
             :key="tag"
             @click="handleTag(tag)"
-            :style="{ fontWeight: tag === 'all' ? 'bold' : 'normal' }"
-            :class="[
-              'tag',
-              'pill',
-              { active: selectedTags.includes(tag) },
-              { active: tag === 'all' && selectedTags.length === 0 },
-            ]"
+            :style="{ fontWeight: tag === 'ALL' ? 'bold' : 'normal' }"
+            :class="['tag', 'pill', { active: selectedTags.includes(tag) }]"
           >
             {{ tag }} {{ count }}
           </span>
-        </div>
-        <div class="search">
-          <search-bar @search="search"></search-bar>
         </div>
       </template>
       <template #main>
@@ -75,57 +69,94 @@ export default {
     const { error, documents: bookLists } = getCollection("booklists");
     const { selectedCategories, handleCategory } = useCategoryFilter();
     const { selectedTags, handleTag } = useTagFilter();
+    const toLower = (item) => {
+      if (typeof item === "string") {
+        return item.toLowerCase();
+      } else if (typeof item === "object") {
+        return item.map((element) => element.toLowerCase());
+      }
+    };
+
     // search
     let keywords = ref("");
     const search = (kw) => {
       if (kw !== "") {
-        keywords.value = kw.split(" ");
+        keywords.value = kw.toLowerCase().split(" ");
       } else {
-        keywords.value = kw;
+        // reset to empty
+        keywords.value = "";
       }
     };
 
+    let tagsLower;
+    let categoriesLower;
+    let titleLower;
+    let selectedCategoriesLower;
+    let selectedTagsLower;
+
     const isSearched = (list) => {
       return keywords.value.some((keyword) => {
+        tagsLower = toLower(list.tags);
+        categoriesLower = toLower(list.categories);
+        titleLower = toLower(list.title);
         return (
-          list.tags.includes(keyword) ||
-          list.categories.some((c) => c.includes(keyword)) ||
-          list.title.includes(keyword)
+          tagsLower.includes(keyword) ||
+          categoriesLower.some((c) => c.includes(keyword)) ||
+          titleLower.includes(keyword)
         );
       });
     };
 
     const isSelected = (list) => {
       if (
-        selectedCategories.value.includes("all") ||
+        selectedCategories.value.includes("ALL") ||
         !selectedCategories.value.length
       ) {
-        if (selectedTags.value.includes("all") || !selectedTags.value.length) {
+        if (selectedTags.value.includes("ALL") || !selectedTags.value.length) {
           return true;
         } else {
-          return selectedTags.value.some((t) => list.tags.includes(t));
+          selectedTagsLower = toLower(selectedTags.value);
+          tagsLower = toLower(list.tags);
+          return selectedTagsLower.some((t) => tagsLower.includes(t));
         }
       } else if (
-        selectedTags.value.includes("all") ||
+        selectedTags.value.includes("ALL") ||
         !selectedTags.value.length
       ) {
         if (
-          selectedCategories.value.includes("all") ||
+          selectedCategories.value.includes("ALL") ||
           !selectedCategories.value.length
         ) {
           return true;
         } else {
-          return selectedCategories.value.some((c) =>
-            list.categories.includes(c)
+          selectedCategoriesLower = toLower(selectedCategories.value);
+          categoriesLower = toLower(list.categories);
+          return selectedCategoriesLower.some((c) =>
+            categoriesLower.includes(c)
           );
         }
       } else {
+        selectedTagsLower = toLower(selectedTags.value);
+        tagsLower = toLower(list.tags);
+        selectedCategoriesLower = toLower(selectedCategories.value);
+        categoriesLower = toLower(list.categories);
         return (
-          selectedTags.value.some((t) => list.tags.includes(t)) ||
-          selectedCategories.value.some((c) => list.categories.includes(c))
+          selectedTagsLower.some((t) => tagsLower.includes(t)) ||
+          selectedCategoriesLower.some((c) => categoriesLower.includes(c))
         );
       }
     };
+
+    // return full data when
+    // 1. Home component is mounted, or
+    // 2. Both selectors include "ALL"
+    let isFull = computed(() => {
+      return (
+        (!selectedTags.value.length && !selectedCategories.value.length) ||
+        (selectedTags.value.includes("ALL") &&
+          selectedCategories.value.includes("ALL"))
+      );
+    });
 
     // tag cloud
     const tags = computed(() => {
@@ -145,17 +176,9 @@ export default {
 
     // show lists that meet the category, tag and search requirments
     const filteredLists = computed(() => {
-      console.log(selectedCategories.value, selectedTags.value);
       // no search term
       if (bookLists.value && keywords.value === "") {
-        if (
-          // return full data in either of the two condtions
-          // when page first loaded, or
-          // when both 'all' is clicked
-          (!selectedTags.value.length && !selectedCategories.value.length) ||
-          (selectedTags.value.includes("all") &&
-            selectedCategories.value.includes("all"))
-        ) {
+        if (isFull.value) {
           return bookLists.value;
         } else {
           // otherwise, filter lists based on selected tags and categories
@@ -164,19 +187,15 @@ export default {
           });
         }
         // with search term
-      } else if (bookLists.value) {
-        if (
-          (!selectedTags.value.length && !selectedCategories.value.length) ||
-          (selectedTags.value.includes("all") &&
-            selectedCategories.value.includes("all"))
-        ) {
+      } else if (bookLists.value && keywords.value !== "") {
+        if (isFull.value) {
           return bookLists.value.filter((list) => {
             return isSearched(list);
           });
         } else {
-          bookLists.value.filter(
-            (list) => isSelected(list) || isSearched(list)
-          );
+          return bookLists.value.filter((list) => {
+            return isSelected(list) && isSearched(list);
+          });
         }
       }
     });
@@ -204,6 +223,11 @@ export default {
 </script>
 
 <style scoped>
+.search {
+  margin-bottom: 30px;
+  margin-top: 15px;
+}
+
 h3 {
   margin-bottom: 20px;
 }
