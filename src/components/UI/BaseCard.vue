@@ -11,7 +11,6 @@ export default {};
 <style scoped>
 .single {
   display: flex;
-  align-items: center;
   border-radius: 10px;
   padding: 20px;
   margin: 10px 0 30px;

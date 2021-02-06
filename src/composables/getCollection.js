@@ -7,7 +7,7 @@ const getCollection = (collection, ...conditions) => {
     const error = ref(null)
 
     // register the firestore collection reference
-    let collectionRefAll = db.collection(collection)
+    let collectionRefAll = db.collection(collection).orderBy("createdAt")
     let collectionRef
     if (!conditions.length) {
         collectionRef = collectionRefAll

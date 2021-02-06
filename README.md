@@ -8,6 +8,10 @@
 
 - public and private lists?
 
+- fix: after editing a list, selected categories and tags got carried over to the homepage
+
+- may swtich search bar to https://tarekraafat.github.io/autoComplete.js
+
 ## Project setup
 
 ```

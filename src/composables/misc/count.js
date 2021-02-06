@@ -1,6 +1,6 @@
 import { ref } from "vue"
 
-const count = (documents, entry) => {
+const count = (documents, entry, lowercase = false) => {
     const items = ref([])
     const itemSet = new Set()
     const itemCount = ref({ "ALL": "" })
@@ -21,8 +21,13 @@ const count = (documents, entry) => {
                 s++
             }
         })
-        itemCount.value[i] = s
+        if (lowercase) {
+            itemCount.value[i.toLowerCase()] = s
+        }
+
     })
+
+
     return itemCount
 }
 

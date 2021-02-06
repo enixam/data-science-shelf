@@ -57,6 +57,7 @@ import count from "@/composables/misc/count";
 import useCategoryFilter from "@/composables/misc/useCategoryFilter";
 import useTagFilter from "@/composables/misc/useTagFilter";
 import Search from "@/components/Search.vue";
+
 import { ref, computed, watch } from "vue";
 
 export default {
@@ -161,7 +162,7 @@ export default {
     // tag cloud
     const tags = computed(() => {
       if (bookLists.value) {
-        let tagCount = count(bookLists.value, "tags");
+        let tagCount = count(bookLists.value, "tags", true);
         return tagCount.value;
       }
     });
