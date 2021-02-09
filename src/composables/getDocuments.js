@@ -8,7 +8,7 @@ const getDocuments = (collection, id, ...conditions) => {
     let documentRef;
     let unsub;
     // get list details by list id
-    if (collection === "booklists" && id) {
+    if (id) {
         documentRef = db.collection(collection).doc(id)
         unsub = documentRef.onSnapshot(doc => {
             // must wait for the server to create the timestamp & send it back
