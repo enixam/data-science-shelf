@@ -23,9 +23,17 @@
         </div>
 
         <div class="icons">
-          <span class="material-icons">
-            thumb_up
-          </span>
+          <div class="upvotes">
+            <span
+              :class="['material-icons', { upvoted: hasUpvoted }]"
+              @click="upvote"
+            >
+              thumb_up
+            </span>
+            <span class="num-upvotes">
+              {{ list.upvotes }}
+            </span>
+          </div>
           <router-link
             :to="{ name: 'listEdit', params: { lid } }"
             v-if="ownership"
@@ -39,12 +47,12 @@
           >
             delete
           </span>
-          <the-dot v-if="isPending">Deleting list </the-dot>
           <div class="error" v-if="errorDeleteDoc">{{ errorDeleteDoc }}</div>
           <div class="error" v-if="errorDeleteImage">
             {{ errorDeleteImage }}
           </div>
         </div>
+        <the-dot v-if="isPending">Deleting list </the-dot>
       </div>
     </template>
 
@@ -75,12 +83,23 @@
       <template #header>Are you sure you want to delete this list?</template>
     </base-dialog>
   </teleport>
+  <teleport to="body">
+    <base-dialog
+      v-if="showDialogUpvote"
+      @confirm="showDialogUpvote = false"
+      :onlyConfirm="true"
+    >
+      <template #header>You have already upvoted this list.</template>
+      <template #confirmWords>Ok</template>
+    </base-dialog>
+  </teleport>
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, watchEffect } from "vue";
 import { getDocuments, getUserDocuments } from "@/composables/getDocuments";
 import getUser from "@/composables/auth/getUser";
+import getUserStat from "@/composables/getUserStat";
 import useDocument from "@/composables/useDocument";
 import { useRouter } from "vue-router";
 import useStorage from "@/composables/useStorage";
@@ -109,10 +128,12 @@ export default {
       listImages,
       files: images,
     } = useStorage();
-    const { error: errorDeleteDoc, deleteDoc } = useDocument(
-      "booklists",
-      props.lid
-    );
+    // deleting and upvoting
+    const {
+      error: errorDeleteDoc,
+      deleteDoc,
+      updateDoc: updateList,
+    } = useDocument("booklists", props.lid);
 
     const handleDelete = async () => {
       showDialog.value = false;
@@ -160,6 +181,35 @@ export default {
       }
     });
 
+    // upvotes
+
+    const hasUpvoted = ref(false);
+    const userStat = ref(null);
+    let updateUser;
+    if (currentUser.value) {
+      getUserStat(currentUser.value.uid).then((data) => {
+        userStat.value = data;
+        hasUpvoted.value = userStat.value.upvotedOn.includes(props.lid);
+        const { updateDoc } = useDocument("users", userStat.value.id);
+        updateUser = updateDoc;
+      });
+    }
+
+    const showDialogUpvote = ref(false);
+
+    const upvote = async () => {
+      if (hasUpvoted.value) {
+        showDialogUpvote.value = true;
+      } else {
+        userStat.value.upvotedOn.push(props.lid);
+        await updateList({ upvotes: list.value.upvotes + 1 });
+        await updateUser({
+          upvotedOn: userStat.value.upvotedOn,
+        });
+        hasUpvoted.value = true;
+      }
+    };
+
     return {
       error,
       list,
@@ -168,8 +218,11 @@ export default {
       errorDeleteImage,
       isPending,
       showDialog,
+      showDialogUpvote,
       handleDelete,
       lastUpdatedAt,
+      upvote,
+      hasUpvoted,
     };
   },
 };
@@ -224,7 +277,14 @@ export default {
   text-align: left;
 }
 
+/* icons */
+.icons {
+  display: flex;
+  justify-content: center;
+}
+
 .icons span {
+  display: block;
   cursor: pointer;
   margin-left: 10px;
 }

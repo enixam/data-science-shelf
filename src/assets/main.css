@@ -118,6 +118,20 @@ button .btn {
   cursor: pointer;
 }
 
+/* upvotes */
+.upvoted {
+  color: #ffcdd2;
+}
+.upvotes {
+  display: flex;
+  align-items: flex-end;
+  margin-top: auto;
+  color: var(--secondaray);
+}
+
+.num-upvotes {
+  margin-left: 5px;
+}
 /* error text */
 .error {
   color: var(--warning);

@@ -37,23 +37,15 @@ import getUser from "@/composables/auth/getUser";
 export default {
   props: ["singleList"],
   setup(props) {
-    const hasUpvoted = ref(true);
+    const hasUpvoted = ref(false);
     const stopWatch = watchEffect(() => {
       const currentUser = getUser();
-      const userStat = ref(null);
       if (currentUser.value) {
         getUserStat(currentUser.value.uid).then((data) => {
-          userStat.value = data;
-          console.log("list id", props.singleList.id);
-          console.log("upvotedOn", userStat.value.upvotedOn);
-          hasUpvoted.value = userStat.value.upvotedOn.includes(
-            props.singleList.id
-          );
-          console.log(hasUpvoted.value);
+          hasUpvoted.value = data.upvotedOn.includes(props.singleList.id);
         });
       }
     });
-
     stopWatch();
 
     return { hasUpvoted };
@@ -90,20 +82,5 @@ export default {
 
 .book-number {
   margin-left: auto;
-}
-
-.upvotes {
-  display: flex;
-  align-items: flex-end;
-  margin-top: auto;
-  color: var(--secondaray);
-}
-
-.upvoted {
-  color: indigo;
-}
-
-.num-upvotes {
-  margin-left: 5px;
 }
 </style>

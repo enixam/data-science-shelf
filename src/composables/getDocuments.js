@@ -64,6 +64,7 @@ const getDocuments = (collection, id, ...conditions) => {
 const getUserDocuments = async (collection, uid) => {
     const userDocuments = ref([])
     const collectionRef = db.collection(collection)
+    const error = ref(null)
     try {
         const res = await collectionRef.where("userId", "==", uid).get()
         res.docs.forEach(doc => {

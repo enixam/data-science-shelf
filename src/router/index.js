@@ -55,7 +55,7 @@ const routes = [
     props: true
   },
   {
-    path: "/edit/list/:lid",
+    path: "/list/:lid/edit",
     name: "listEdit",
     component: ListEdit,
     props: true,

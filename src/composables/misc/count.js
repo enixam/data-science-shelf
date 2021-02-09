@@ -23,6 +23,8 @@ const count = (documents, entry, lowercase = false) => {
         })
         if (lowercase) {
             itemCount.value[i.toLowerCase()] = s
+        } else {
+            itemCount.value[i] = s
         }
 
     })

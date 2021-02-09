@@ -11,8 +11,10 @@
     </section>
     <menu>
       <slot name="action">
-        <button @click="$emit('confirm')">Yes</button>
-        <button @click="$emit('cancel')">No</button>
+        <button @click="$emit('confirm')">
+          <slot name="confirmWords">Yes</slot>
+        </button>
+        <button @click="$emit('cancel')" v-if="!onlyConfirm">No</button>
       </slot>
     </menu>
   </dialog>
@@ -20,7 +22,7 @@
 
 <script>
 export default {
-  props: ["title"],
+  props: ["title", "onlyConfirm"],
 };
 </script>
 

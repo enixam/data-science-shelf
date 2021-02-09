@@ -1,7 +1,7 @@
 import { db } from "@/firebase/config"
 import { ref } from "vue"
 
-const useDocument = (collection, id,) => {
+const useDocument = (collection, id) => {
     let error = ref(null)
     let isPending = ref(false)
     let docRef;

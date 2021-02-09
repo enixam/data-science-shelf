@@ -1,4 +1,3 @@
-import { ref } from "vue"
 import { db } from "@/firebase/config"
 
 const getUserStat = async (uid) => {
