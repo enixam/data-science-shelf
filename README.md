@@ -1,8 +1,29 @@
 # dsbook-list
 
+[Data Science Shelf](https://dsbook-list.web.app/) is a simple web app for sharing good reads in data science. It is built with Vue.js and Firebase. 
+
+Some features include 
+
+- user authentication and file storage
+
+- real-time updates and query
+
+- markdown editor support 
+
+- composition API 
+
+
+
+
 **TODO**
 
-- like and review system
+- vuex 
+
+- hierarchical category selector 
+
+- pagination 
+
+- review system
 
 - add user navigation drawer (when vuetify 3 is released)
 
@@ -12,24 +33,3 @@
 
 - may swtich search bar to https://tarekraafat.github.io/autoComplete.js
 
-## Project setup
-
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-
-```
-npm run build
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
