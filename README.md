@@ -4,7 +4,7 @@
 
 Some features include 
 
-- authentication and file storage
+- user authentication and file storage
 
 - real-time updates and query
 
