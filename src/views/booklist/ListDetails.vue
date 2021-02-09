@@ -16,9 +16,10 @@
               >{{ list.userName }}</router-link
             >
           </p>
-          <div class="description">
-            <p>{{ list.description }}</p>
-          </div>
+          <v-md-preview
+            v-if="list.description"
+            :text="list.description"
+          ></v-md-preview>
           <p>updated {{ lastUpdatedAt }} ago</p>
         </div>
 
@@ -62,7 +63,6 @@
         <div v-if="!list.books.length" class="no-book-message">
           This list currently has no book.
         </div>
-        <add-book v-if="ownership" :list="list"></add-book>
         <single-book
           v-if="list.books.length"
           v-for="book in list.books"
@@ -71,6 +71,7 @@
           :lid="lid"
           :list="list"
         ></single-book>
+        <add-book v-if="ownership" :list="list"></add-book>
       </div>
     </template>
   </two-column>
@@ -116,6 +117,7 @@ export default {
     "two-column": TwoColumn,
   },
   setup(props) {
+    const markdownText = ref("#topic1 \n this is a letter **bold**");
     const { error, documents: list } = getDocuments("booklists", props.lid);
     const currentUser = getUser();
     const router = useRouter();
@@ -229,6 +231,10 @@ export default {
 </script>
 
 <style secoped>
+.list-info {
+  max-width: 320px;
+}
+
 .list-info div {
   text-align: center;
   position: sticky;

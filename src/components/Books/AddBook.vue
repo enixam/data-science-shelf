@@ -3,11 +3,29 @@
     <button v-if="!showForm" @click="showForm = !showForm">
       Add a awesome book!
     </button>
-    <form @submit.prevent="handleSubmit" v-else id="addForm">
+    <form @submit.prevent="handleSubmit" v-else>
       <label for="">Book Title *</label>
       <input type="text" v-model="title" required />
-      <label for="">Review *</label>
-      <textarea v-model="review" @input="grow" required></textarea>
+      <label for=""
+        >Review *
+        <span class="use-markdown-prompt" @click="useMarkdown = !useMarkdown">{{
+          useMarkdown ? "back to plain text" : "use Markdown"
+        }}</span>
+      </label>
+      <textarea
+        v-if="!useMarkdown"
+        v-model="review"
+        @input="grow"
+        required
+      ></textarea>
+      <v-md-editor
+        v-else
+        v-model="review"
+        height="300px"
+        left-toolbar=""
+        right-toolbar="preview"
+        required
+      ></v-md-editor>
       <label>Link </label>
       <input type="url" v-model="link" />
       <label>Author </label>
@@ -33,6 +51,7 @@ export default {
     const review = ref("");
     const link = ref("");
     const author = ref("");
+    const useMarkdown = ref(false);
 
     const { updateDoc, isPending, error: errorUpdateDoc } = useDocument(
       "booklists",
@@ -63,7 +82,6 @@ export default {
         link.value = "";
         author.value = "";
         showForm.value = false;
-        console.log("finished uploading the new book!");
       }
     };
 
@@ -77,6 +95,7 @@ export default {
       handleSubmit,
       errorUpdateDoc,
       isPending,
+      useMarkdown,
     };
   },
 };

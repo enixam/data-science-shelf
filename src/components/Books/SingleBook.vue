@@ -1,7 +1,7 @@
 <template>
   <base-card>
     <!-- the book-info root container cancels the flex display on base-card -->
-    <div class="book-info">
+    <div v-if="!edit" class="book-info">
       <div class="title-author">
         <div class="title">
           <h3 v-if="book.link">
@@ -14,10 +14,10 @@
         <div class="author" v-if="book.author">by {{ book.author }}</div>
       </div>
       <div class="review">
-        {{ book.review }}
+        <v-md-preview :text="book.review"></v-md-preview>
       </div>
       <div class="icons" v-if="ownership">
-        <span class="material-icons">
+        <span class="material-icons" @click="edit = true">
           mode_edit
         </span>
         <span class="material-icons" @click="showDialog = true">
@@ -25,8 +25,11 @@
         </span>
       </div>
       <div class="error" v-if="error">{{ error }}</div>
-      <the-dot v-if="isPending">Deleting book </the-dot>
     </div>
+    <div v-else class="book-edit">
+      <edit-book :book="book" :list="list" @stopEdit="edit = false"></edit-book>
+    </div>
+    <the-dot v-if="isPending">Deleting book </the-dot>
   </base-card>
   <teleport to="body">
     <base-dialog
@@ -44,10 +47,15 @@ import { ref, comptued } from "vue";
 import { timestamp } from "@/firebase/config";
 import useDocument from "@/composables/useDocument";
 import { formatDistanceToNow } from "date-fns";
+import EditBook from "@/components/Books/EditBook";
 
 export default {
   props: ["book", "ownership", "lid", "list"],
+  components: {
+    "edit-book": EditBook,
+  },
   setup(props) {
+    const edit = ref(false);
     const { error, isPending, updateDoc } = useDocument("booklists", props.lid);
     const showDialog = ref(false);
     const handleDelete = async (id) => {
@@ -64,7 +72,7 @@ export default {
 
     const handleEdit = async () => {};
 
-    return { handleEdit, handleDelete, error, isPending, showDialog };
+    return { edit, handleEdit, handleDelete, error, isPending, showDialog };
   },
 };
 </script>
@@ -106,5 +114,9 @@ h3 a:hover {
 .icons {
   display: flex;
   justify-content: flex-end;
+}
+
+.book-edit {
+  width: 100%;
 }
 </style>

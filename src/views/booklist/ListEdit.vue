@@ -14,8 +14,24 @@
         >{{ category }}</span
       >
     </div>
-    <label>Description</label>
-    <textarea v-model="description" @input="grow"></textarea>
+    <label
+      >Description
+      <span class="use-markdown-prompt" @click="useMarkdown = !useMarkdown">{{
+        useMarkdown ? "back to plain text" : "use Markdown"
+      }}</span></label
+    >
+    <textarea
+      v-if="!useMarkdown"
+      v-model="description"
+      @input="grow"
+    ></textarea>
+    <v-md-editor
+      v-else
+      v-model="description"
+      height="300px"
+      left-toolbar=""
+      right-toolbar="preview"
+    ></v-md-editor>
     <!-- tags -->
     <label for="">Tags</label>
     <div class="book-tags">
@@ -85,6 +101,7 @@ export default {
     const description = ref("");
     const { selectedCategories, handleCategory } = useCategoryFilter();
     const file = ref(null);
+    const useMarkdown = ref(false);
 
     // tags
     const tag = ref(null);
@@ -191,12 +208,17 @@ export default {
       errorUpdateDoc,
       isPending,
       grow,
+      useMarkdown,
     };
   },
 };
 </script>
 
 <style scoped>
+form {
+  max-width: 600px;
+}
+
 form h2 {
   margin-bottom: 5px;
 }
@@ -254,4 +276,6 @@ button {
   margin-left: 5px;
   color: #444;
 }
+
+
 </style>

@@ -1,9 +1,9 @@
 <template>
   <form @submit.prevent="handleSubmit">
     <h2>Create new book list</h2>
-    <label for="">List title</label>
+    <label for="">Title *</label>
     <input type="text" required v-model="title" />
-    <label>Pick categories for the list</label>
+    <label>Pick categories *</label>
     <div class="categories">
       <span
         v-for="category in categories"
@@ -13,10 +13,27 @@
         >{{ category }}</span
       >
     </div>
-    <label for="">(Optional) A short description of your list</label>
-    <textarea v-model="description" @input="grow"></textarea>
+    <label for=""
+      >A short description
+      <span class="use-markdown-prompt" @click="useMarkdown = !useMarkdown">{{
+        useMarkdown ? "back to plain text" : "use Markdown"
+      }}</span></label
+    >
+    <textarea
+      v-if="!useMarkdown"
+      v-model="description"
+      @input="grow"
+    ></textarea>
+    <v-md-editor
+      v-else
+      v-model="description"
+      height="300px"
+      left-toolbar=""
+      right-toolbar="preview"
+    ></v-md-editor>
+
     <tags-input @tagEntered="updateTags">
-      <template #inputPrompt>(Optional) Press enter to add tags</template>
+      <template #inputPrompt>Press enter to add tags</template>
       <template #errorMessage>Tag already exists</template>
     </tags-input>
     <label
@@ -62,6 +79,7 @@ export default {
   setup() {
     const title = ref("");
     const description = ref("");
+    const useMarkdown = ref(false);
     const file = ref(null);
     const isPending = ref(false);
     // add or remove categories
@@ -134,6 +152,7 @@ export default {
       categories,
       handleCategory,
       description,
+      useMarkdown,
       updateTags,
       handleSubmit,
       handleFile,
@@ -148,6 +167,10 @@ export default {
 </script>
 
 <style scoped>
+form {
+  max-width: 600px;
+}
+
 form h2 {
   margin-bottom: 5px;
 }

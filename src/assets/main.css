@@ -142,3 +142,9 @@ button .btn {
 *:focus {
   outline: none;
 }
+
+.use-markdown-prompt {
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+}
