@@ -2,20 +2,23 @@ import { ref, watchEffect } from "vue"
 import { db } from "@/firebase/config"
 
 
-const getCollection = (collection, order_by = ["upvotes", "createdAt"], ...conditions) => {
+const getCollection = (collection, limit = null, orderConfig = { createdAt: "desc", upvotes: "desc" }) => {
     const documents = ref(null)
     const error = ref(null)
 
     // register the firestore collection reference
-    let collectionRefAll = db.collection(collection).orderBy(...order_by)
-    let collectionRef
-    if (!conditions.length) {
-        collectionRef = collectionRefAll
-    } else {
-        conditions.forEach(condition => {
-            collectionRef = collectionRefAll.where(...condition)
-        })
+    let collectionRefAll = db.collection(collection);
+    let collectionRef;
+    if (orderConfig) {
+        for (let variable in orderConfig) {
+            console.log(variable, orderConfig[variable])
+            collectionRef = collectionRefAll.orderBy(variable, orderConfig[variable])
+        }
     }
+    if (limit) {
+        collectionRef = collectionRef.limit(limit)
+    }
+
 
     const unsub = collectionRef.onSnapshot(snap => {
         let results = []

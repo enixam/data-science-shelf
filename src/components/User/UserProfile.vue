@@ -53,7 +53,7 @@ export default {
     const { error: errorGetUser, documents: user } = getDocuments(
       "users",
       null,
-      ["userId", "==", props.userId]
+      props.userId
     );
     const currentUser = getUser();
     const showForm = ref(false);

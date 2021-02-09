@@ -3,7 +3,7 @@
     <h2>Create new book list</h2>
     <label for="">Title *</label>
     <input type="text" required v-model="title" />
-    <label>Pick categories *</label>
+    <label>Pick categories</label>
     <div class="categories">
       <span
         v-for="category in categories"
@@ -63,7 +63,6 @@ import { ref, computed } from "vue";
 import { timestamp } from "@/firebase/config";
 import useCollection from "@/composables/useCollection";
 import useDocument from "@/composables/useDocument";
-import { getDocuments } from "@/composables/getDocuments";
 import { useRouter } from "vue-router";
 import useStorage from "@/composables/useStorage";
 import getUser from "@/composables/auth/getUser";

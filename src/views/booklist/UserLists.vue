@@ -19,7 +19,7 @@
 
 <script>
 import { computed, ref } from "vue";
-import getCollection from "@/composables/getCollection";
+import { getDocuments } from "@/composables/getDocuments";
 import SingleList from "@/components/Lists/SingleList.vue";
 import UserProfile from "@/components/User/UserProfile.vue";
 import TwoColumn from "@/components/Layout/TwoColumn.vue";
@@ -33,11 +33,11 @@ export default {
     "user-profile": UserProfile,
   },
   setup(props) {
-    const { error, documents: userLists } = getCollection("booklists", [
-      "userId",
-      "==",
-      props.uid,
-    ]);
+    const { error, documents: userLists } = getDocuments(
+      "booklists",
+      null,
+      props.uid
+    );
 
     const isPending = computed(() => {
       if (!userLists.value) return true;

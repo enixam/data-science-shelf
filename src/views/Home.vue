@@ -67,7 +67,7 @@ export default {
     "search-bar": Search,
   },
   setup() {
-    const { error, documents: bookLists } = getCollection("booklists");
+    const { error, documents: bookLists } = getCollection("booklists", null);
     const { selectedCategories, handleCategory } = useCategoryFilter();
     const { selectedTags, handleTag } = useTagFilter();
     const toLower = (item) => {
@@ -77,7 +77,6 @@ export default {
         return item.map((element) => element.toLowerCase());
       }
     };
-
     // search
     let keywords = ref("");
     const search = (kw) => {

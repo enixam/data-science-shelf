@@ -2,14 +2,14 @@ import { ref, watchEffect } from "vue"
 import { db } from "@/firebase/config"
 
 
-const getDocuments = (collection, id, ...conditions) => {
+const getDocuments = (collection, lid, uid) => {
     const documents = ref(null)
     const error = ref(null)
     let documentRef;
     let unsub;
     // get list details by list id
-    if (id) {
-        documentRef = db.collection(collection).doc(id)
+    if (lid) {
+        documentRef = db.collection(collection).doc(lid)
         unsub = documentRef.onSnapshot(doc => {
             // must wait for the server to create the timestamp & send it back
             if (doc.data() && doc.data().createdAt) {
@@ -25,15 +25,9 @@ const getDocuments = (collection, id, ...conditions) => {
             error.value = err.message
         })
     }
-
-
-    else if (!id) {
+    else if (!lid && uid) {
         // get user profile by userId from the "users" collection
-        documentRef = db.collection(collection)
-        conditions.forEach(condition => {
-            documentRef = documentRef.where(...condition)
-        })
-
+        documentRef = db.collection(collection).where("userId", "==", uid)
         unsub = documentRef.onSnapshot(snap => {
             let results = []
             snap.docs.forEach(doc => {
