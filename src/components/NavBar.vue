@@ -8,14 +8,14 @@
         <router-link :to="{ name: 'Home' }">Data Science Shelf</router-link>
       </h1>
       <div class="links">
+        <router-link :to="{ name: 'Create' }" class="btn"
+          >Create list</router-link
+        >
         <div v-if="user">
           <router-link
             :to="{ name: 'userLists', params: { uid: user.uid } }"
             class="btn"
             >{{ name }}'s list</router-link
-          >
-          <router-link :to="{ name: 'Create' }" class="btn"
-            >Create list</router-link
           >
           <button @click="handleLogout" v-if="user">Log out</button>
         </div>
@@ -94,6 +94,7 @@ h1 a:hover {
 
 nav .links {
   margin-left: auto;
+  display: flex;
 }
 
 nav .links a,
