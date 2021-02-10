@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "**/README.md"
 jobs:
   firebase-deploy:
     runs-on: ubuntu-latest
