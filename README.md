@@ -1,6 +1,20 @@
 # dsbook-list
 
-[Data Science Shelf](https://dsbook-list.web.app/) is a simple web app for sharing good reads in data science. It is built with Vue.js and Firebase. 
+[Data Science Shelf](https://dsbook-list.web.app/) is a simple web app for sharing good reads in data science. 
+
+
+<img src = 'https://qiushi.rbind.io/project/data-science-shelf/featured_hu2a2fd19ce2d1a85f104e7db3c03d0017_196571_720x0_resize_q90_lanczos.jpg'/>
+
+Users can 
+
+- create, share and like book lists
+
+- write list description and book review via Markdown Syntax
+
+- filter lists based on categories, tags, or search term 
+
+- view any user's profile 
+
 
 Some features include 
 
@@ -11,7 +25,6 @@ Some features include
 - markdown editor support 
 
 - composition API 
-
 
 
 
