@@ -79,7 +79,7 @@ button:disabled {
 
 /* forms */
 form {
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 30px;
   border-radius: 8px;
@@ -147,4 +147,28 @@ button .btn {
   font-weight: bold;
   text-decoration: underline;
   cursor: pointer;
+}
+
+/* markdown editor  */
+.v-md-editor-preview {
+  word-break: keep-all !important;
+}
+
+.v-md-editor-preview img {
+  display: block;
+  max-width: 200px;
+  margin: 10px auto;
+}
+
+.v-md-editor-preview a {
+  font-weight: bold;
+  color: var(--blue);
+}
+
+.v-md-textarea-editor {
+  min-height: 150px !important;
+}
+
+.v-md-textarea-editor textarea {
+  word-break: keep-all !important;
 }

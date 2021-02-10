@@ -23,7 +23,6 @@ export default {
     const keywords = ref("");
     watch(keywords, () => {
       if (keywords.value === "") {
-        console.log("search empty!");
         context.emit("search", "");
       }
     });

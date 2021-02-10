@@ -9,11 +9,10 @@
       </h1>
       <div class="links">
         <div v-if="user">
-          <span class="greeting">Hello, {{ name }}</span>
           <router-link
             :to="{ name: 'userLists', params: { uid: user.uid } }"
             class="btn"
-            >My list</router-link
+            >{{ name }}'s list</router-link
           >
           <router-link :to="{ name: 'Create' }" class="btn"
             >Create list</router-link

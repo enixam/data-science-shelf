@@ -126,7 +126,6 @@ export default {
         const updatedUser = {};
         if (file.value) {
           await uploadAvatar(file.value);
-          console.log("after uploading image");
           if (!errorUploadAvatar.value) {
             updatedUser.photoURL = url.value;
             updatedUser.filePath = filePath.value;

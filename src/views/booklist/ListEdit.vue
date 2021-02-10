@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit">
+  <form>
     <the-dot v-if="isLoadPending">restoring list data </the-dot>
     <div class="error">{{ errorLoad }}</div>
     <label for="">Title</label>
@@ -28,9 +28,9 @@
     <v-md-editor
       v-else
       v-model="description"
-      height="300px"
       left-toolbar=""
       right-toolbar="preview"
+      placeholder="supports github flavour markdown (i.e., **text** will be bold and ![]() inserts an image)"
     ></v-md-editor>
     <!-- tags -->
     <label for="">Tags</label>
@@ -54,7 +54,10 @@
     <input type="file" @change="handleFile" accept=".jpg, jpeg, .png, .svg" />
 
     <div class="buttons">
-      <button v-if="!isPending">Save</button>
+      <button v-if="!isPending" @click.prevent="handleSubmit">Save</button>
+      <button v-if="!isPending" @click.prevent="stopEdit">
+        Cancel
+      </button>
       <div v-else>
         <the-dot>Saving </the-dot>
       </div>
@@ -189,6 +192,11 @@ export default {
         console.log(errorUploadImage.value);
       }
     };
+
+    const stopEdit = () => {
+      router.push({ name: "listDetails", params: { lid: list.value.id } });
+    };
+
     return {
       isLoadPending,
       errorLoad,
@@ -202,6 +210,7 @@ export default {
       removeTag,
       tag,
       handleSubmit,
+      stopEdit,
       handleFile,
       handleCategory,
       errorUploadImage,
@@ -241,6 +250,11 @@ input[type="text"]:focus {
   box-shadow: 0 0 0 3px rgba(199, 199, 199, 0.753);
 }
 
+.buttons {
+  display: flex;
+  justify-content: center;
+}
+
 button {
   margin-top: 20px;
 }
@@ -276,6 +290,4 @@ button {
   margin-left: 5px;
   color: #444;
 }
-
-
 </style>

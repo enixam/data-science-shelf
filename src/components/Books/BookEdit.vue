@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <form @submit.prevent="handleSubmit">
     <label>Title</label>
     <input type="text" v-model="title" required />
     <label
@@ -17,17 +17,16 @@
     <v-md-editor
       v-else
       v-model="review"
-      height="300px"
       left-toolbar=""
       right-toolbar="preview"
-      required
+      placeholder="supports github flavour markdown (i.e., **text** will be bold and ![]() inserts an image)"
     ></v-md-editor>
     <label>Link </label>
     <input type="url" v-model="link" />
     <label>Author </label>
     <input type="text" v-model="author" />
     <div class="buttons">
-      <button @click.prevent="handleSubmit">Edit</button>
+      <button>Save</button>
       <button @click.prevent="$emit('stopEdit')">Cancel</button>
     </div>
     <the-dot v-if="isPending">Saving </the-dot>
@@ -39,6 +38,7 @@
 import { ref } from "vue";
 import { timestamp } from "@/firebase/config";
 import useDocument from "@/composables/useDocument";
+import grow from "@/composables/misc/textAreaGrow";
 
 export default {
   props: ["book", "list"],
@@ -60,6 +60,7 @@ export default {
     } = useDocument("booklists", list.id);
 
     const handleSubmit = async () => {
+      console.log(review.value);
       const updatedBook = {
         id: book.id,
         title: title.value,
@@ -73,7 +74,6 @@ export default {
         books: [updatedBook, ...otherBooks],
         lastUpdatedAt: timestamp(),
       });
-      console.log("finished update");
       if (errorUpdateBook.value) {
         console.log(errorUpdateBook.value);
         error.value = "Failed to update the book.";
@@ -91,6 +91,7 @@ export default {
       isPending,
       error,
       handleSubmit,
+      grow,
     };
   },
 };

@@ -11,7 +11,6 @@ const getCollection = (collection, limit = null, orderConfig = { createdAt: "des
     let collectionRef;
     if (orderConfig) {
         for (let variable in orderConfig) {
-            console.log(variable, orderConfig[variable])
             collectionRef = collectionRefAll.orderBy(variable, orderConfig[variable])
         }
     }

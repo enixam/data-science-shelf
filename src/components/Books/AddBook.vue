@@ -1,12 +1,12 @@
 <template>
   <div class="add-book">
-    <button v-if="!showForm" @click="showForm = !showForm">
+    <button v-if="!showForm" @click="showForm = true">
       Add a awesome book!
     </button>
-    <form @submit.prevent="handleSubmit" v-else>
-      <label for="">Book Title *</label>
+    <form v-else @submit.prevent="handleSubmit">
+      <label>Book Title *</label>
       <input type="text" v-model="title" required />
-      <label for=""
+      <label
         >Review *
         <span class="use-markdown-prompt" @click="useMarkdown = !useMarkdown">{{
           useMarkdown ? "back to plain text" : "use Markdown"
@@ -31,8 +31,13 @@
       <label>Author </label>
       <input type="text" v-model="author" />
       <div class="error" v-if="errorUpdateDoc">{{ errorUpdateDoc }}</div>
-      <button v-if="!isPending">Add</button>
-      <the-dot v-else>Add the new book</the-dot>
+      <div class="buttons">
+        <button v-if="!isPending">Add</button>
+        <button v-if="!isPending" @click.prevent="showForm = !showForm">
+          Cancel
+        </button>
+      </div>
+      <the-dot v-if="isPending">Add the new book</the-dot>
     </form>
   </div>
 </template>
@@ -45,7 +50,7 @@ import { timestamp } from "@/firebase/config";
 
 export default {
   props: ["list"],
-  setup(props) {
+  setup(props, context) {
     const showForm = ref(false);
     const title = ref("");
     const review = ref("");
@@ -105,6 +110,11 @@ export default {
 form {
   width: 100%;
   max-width: none;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
 }
 
 button {

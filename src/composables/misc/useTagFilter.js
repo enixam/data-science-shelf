@@ -21,7 +21,6 @@ const handleTag = (tag) => {
     } else {
         selectedTags.value = ["ALL"];
     }
-    console.log("tag: ", selectedTags.value)
 }
 
 const useTagFilter = () => {

@@ -24,10 +24,10 @@
           delete
         </span>
       </div>
-      <div class="error" v-if="error">{{ error }}</div>
+      <div class="error" v-if="error">Failed to delete the book</div>
     </div>
     <div v-else class="book-edit">
-      <edit-book :book="book" :list="list" @stopEdit="edit = false"></edit-book>
+      <book-edit :book="book" :list="list" @stopEdit="edit = false"></book-edit>
     </div>
     <the-dot v-if="isPending">Deleting book </the-dot>
   </base-card>
@@ -47,12 +47,12 @@ import { ref, comptued } from "vue";
 import { timestamp } from "@/firebase/config";
 import useDocument from "@/composables/useDocument";
 import { formatDistanceToNow } from "date-fns";
-import EditBook from "@/components/Books/EditBook";
+import BookEdit from "@/components/Books/BookEdit";
 
 export default {
   props: ["book", "ownership", "lid", "list"],
   components: {
-    "edit-book": EditBook,
+    "book-edit": BookEdit,
   },
   setup(props) {
     const edit = ref(false);
@@ -61,12 +61,11 @@ export default {
     const handleDelete = async (id) => {
       showDialog.value = false;
       const books = props.list.books.filter((book) => book.id !== id);
-      console.log(books);
       // deleting the book from the list
       // also update the list update time
       await updateDoc({ books: books, lastUpdatedAt: timestamp() });
-      if (!error.value) {
-        console.log("finished deleting the book!");
+      if (error.value) {
+        console.log(error.value);
       }
     };
 

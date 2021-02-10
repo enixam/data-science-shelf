@@ -14,7 +14,6 @@ const getDocuments = (collection, lid, uid) => {
             // must wait for the server to create the timestamp & send it back
             if (doc.data() && doc.data().createdAt) {
                 documents.value = { ...doc.data(), id: doc.id }
-                console.log(documents.value)
                 error.value = null
             }
             else {

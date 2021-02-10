@@ -82,5 +82,6 @@ export default {
 
 .book-number {
   margin-left: auto;
+  min-width: 3rem;
 }
 </style>

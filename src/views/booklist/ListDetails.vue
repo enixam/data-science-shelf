@@ -8,7 +8,7 @@
           <img :src="list.coverUrl" alt="" />
         </div>
         <h2>{{ list.title }}</h2>
-        <div class="user">
+        <div class="user-update">
           <p>
             Created by
             <router-link
@@ -16,44 +16,45 @@
               >{{ list.userName }}</router-link
             >
           </p>
+          <p>updated {{ lastUpdatedAt }} ago</p>
+          <div class="icons">
+            <div class="upvotes">
+              <span
+                :class="['material-icons', { upvoted: hasUpvoted }]"
+                @click="upvote"
+              >
+                thumb_up
+              </span>
+              <span class="num-upvotes">
+                {{ list.upvotes }}
+              </span>
+            </div>
+            <router-link
+              :to="{ name: 'listEdit', params: { lid } }"
+              v-if="ownership"
+            >
+              <span class="material-icons">mode_edit</span>
+            </router-link>
+            <span
+              class="material-icons"
+              v-if="ownership"
+              @click="showDialog = true"
+            >
+              delete
+            </span>
+            <div class="error" v-if="errorDeleteDoc">{{ errorDeleteDoc }}</div>
+            <div class="error" v-if="errorDeleteImage">
+              {{ errorDeleteImage }}
+            </div>
+          </div>
+          <the-dot v-if="isPending">Deleting list </the-dot>
+        </div>
+        <div class="description">
           <v-md-preview
             v-if="list.description"
             :text="list.description"
           ></v-md-preview>
-          <p>updated {{ lastUpdatedAt }} ago</p>
         </div>
-
-        <div class="icons">
-          <div class="upvotes">
-            <span
-              :class="['material-icons', { upvoted: hasUpvoted }]"
-              @click="upvote"
-            >
-              thumb_up
-            </span>
-            <span class="num-upvotes">
-              {{ list.upvotes }}
-            </span>
-          </div>
-          <router-link
-            :to="{ name: 'listEdit', params: { lid } }"
-            v-if="ownership"
-          >
-            <span class="material-icons">mode_edit</span>
-          </router-link>
-          <span
-            class="material-icons"
-            v-if="ownership"
-            @click="showDialog = true"
-          >
-            delete
-          </span>
-          <div class="error" v-if="errorDeleteDoc">{{ errorDeleteDoc }}</div>
-          <div class="error" v-if="errorDeleteImage">
-            {{ errorDeleteImage }}
-          </div>
-        </div>
-        <the-dot v-if="isPending">Deleting list </the-dot>
       </div>
     </template>
 
@@ -63,6 +64,7 @@
         <div v-if="!list.books.length" class="no-book-message">
           This list currently has no book.
         </div>
+        <add-book v-if="ownership" :list="list"></add-book>
         <single-book
           v-if="list.books.length"
           v-for="book in list.books"
@@ -71,7 +73,6 @@
           :lid="lid"
           :list="list"
         ></single-book>
-        <add-book v-if="ownership" :list="list"></add-book>
       </div>
     </template>
   </two-column>
@@ -88,6 +89,7 @@
     <base-dialog
       v-if="showDialogUpvote"
       @confirm="showDialogUpvote = false"
+      @cancel="showDialogUpvote = false"
       :onlyConfirm="true"
     >
       <template #header>You have already upvoted this list.</template>
@@ -117,7 +119,6 @@ export default {
     "two-column": TwoColumn,
   },
   setup(props) {
-    const markdownText = ref("#topic1 \n this is a letter **bold**");
     const { error, documents: list } = getDocuments("booklists", props.lid);
     const currentUser = getUser();
     const router = useRouter();
@@ -231,16 +232,6 @@ export default {
 </script>
 
 <style secoped>
-.list-info {
-  max-width: 320px;
-}
-
-.list-info div {
-  text-align: center;
-  position: sticky;
-  top: 0;
-}
-
 .list-info h2 {
   text-transform: capitalize;
   font-size: 24px;
@@ -264,18 +255,26 @@ export default {
 
 .list-info .cover img {
   display: block;
-  min-width: 50%;
-  min-height: 50%;
-  max-width: 200%;
+  min-width: 30%;
+  min-height: 30%;
+  max-width: 150%;
   max-height: 200%;
 }
 
-.user p {
+.description {
+  text-align: left;
+}
+
+.user-update {
+  text-align: center;
+}
+
+.user-update p {
   color: #999;
 }
 
 /* link to user page */
-.user a {
+.user-update a {
   color: var(--blue);
 }
 

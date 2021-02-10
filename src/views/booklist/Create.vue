@@ -27,11 +27,10 @@
     <v-md-editor
       v-else
       v-model="description"
-      height="300px"
       left-toolbar=""
       right-toolbar="preview"
+      placeholder="supports github flavour markdown (i.e., **text** will be bold and ![]() inserts an image)"
     ></v-md-editor>
-
     <tags-input @tagEntered="updateTags">
       <template #inputPrompt>Press enter to add tags</template>
       <template #errorMessage>Tag already exists</template>
@@ -70,7 +69,6 @@ import grow from "@/composables/misc/textAreaGrow";
 import TagsInput from "@/components/Lists/TagsInput.vue";
 import useCategoryFilter from "@/composables/misc/useCategoryFilter";
 import categories from "@/composables/data/categories";
-
 export default {
   components: {
     "tags-input": TagsInput,
@@ -138,6 +136,8 @@ export default {
       if (!errorUploadImage.value) {
         const res = await addList(newList);
         if (!errorAddList.value) {
+          selectedCategories.value = [];
+          selectedTags.value = [];
           router.push({ name: "listDetails", params: { lid: res.id } });
         }
       } else {

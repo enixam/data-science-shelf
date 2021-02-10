@@ -8,8 +8,12 @@ import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import '@kangc/v-md-editor/lib/style/base-editor.css';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import enUS from '@kangc/v-md-editor/lib/lang/en-US';
+import createEmojiPlugin from '@kangc/v-md-editor/lib/plugins/emoji/index';
+import '@kangc/v-md-editor/lib/plugins/emoji/emoji.css';
 VueMarkdownEditor.use(githubTheme);
+VueMarkdownEditor.use(createEmojiPlugin())
 VMdPreview.use(githubTheme);
+VMdPreview.use(createEmojiPlugin());
 VueMarkdownEditor.lang.use('en-US', enUS);
 // global components
 import BaseDialog from "@/components/UI/BaseDialog.vue"
