@@ -2,7 +2,7 @@ import { ref, watchEffect } from "vue"
 import { db } from "@/firebase/config"
 
 
-const getDocuments = (collection, lid, uid) => {
+const getDocuments = (collection, lid = null, uid = null) => {
     const documents = ref(null)
     const error = ref(null)
     let documentRef;
@@ -23,21 +23,21 @@ const getDocuments = (collection, lid, uid) => {
             documents.value = null
             error.value = err.message
         })
-    }
-    else if (!lid && uid) {
+    } else if (!lid && uid) {
         // get user profile by userId from the "users" collection
+        // or: get booklists by userId from the "booklists" collection
         documentRef = db.collection(collection).where("userId", "==", uid)
         unsub = documentRef.onSnapshot(snap => {
             let results = []
             snap.docs.forEach(doc => {
                 doc.data() && results.push({ ...doc.data(), id: doc.id })
             })
-
-            if (results.length === 1) {
-                documents.value = results[0]
-            } else {
+            if (collection === "booklists") {
                 documents.value = results
+            } else if (collection === "users") {
+                documents.value = results[0]
             }
+
         }, err => {
             documents.value = null
             error.value = err.message

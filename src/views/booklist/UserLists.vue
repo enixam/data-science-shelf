@@ -18,12 +18,11 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { getDocuments } from "@/composables/getDocuments";
 import SingleList from "@/components/Lists/SingleList.vue";
 import UserProfile from "@/components/User/UserProfile.vue";
 import TwoColumn from "@/components/Layout/TwoColumn.vue";
-import { auth } from "@/firebase/config";
 
 export default {
   props: ["uid"],

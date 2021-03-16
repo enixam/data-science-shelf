@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="handleSubmit">
     <input type="text" placeholder="Display name" v-model="name" required />
-    <input type="email" placeholder="" v-model="email" required />
-    <input type="password" v-model="password" required />
+    <input type="email" placeholder="Email" v-model="email" required />
+    <input type="password" placeholder="Password" v-model="password" required />
     <div class="error" v-if="error">{{ error }}</div>
     <button v-if="!isPending">Sign up</button>
     <the-dot v-else>Loading </the-dot>

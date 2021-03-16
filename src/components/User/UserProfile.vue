@@ -59,9 +59,10 @@ export default {
     const showForm = ref(false);
     const file = ref(null);
     const isSavePending = ref(false);
+
+    // functions for updaing user name and avatar
     let errorUpdateUser;
     let updateUser;
-    // functions for updaing user name and avatar
     watch(user, () => {
       ({ error: errorUpdateUser, updateDoc: updateUser } = useDocument(
         "users",
